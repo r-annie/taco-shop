@@ -10,4 +10,9 @@ public class TacoCloudApplication {
         SpringApplication.run(TacoCloudApplication.class, args);
     }
 
+//    3 варианта реализации контроллера стартовой страницы: 1. HomeController; 2. WebConfig; 3. Реализация ниже.
+//    @Override
+//    public void addViewControllers(ViewControllerRegistry registry) {
+//        registry.addViewController("/").setViewName("home");
+//    }
 }
