@@ -18,18 +18,35 @@ import javax.validation.Valid;
 @SessionAttributes("tacoOrder")
 public class OrderController {
 
+    private OrderRepository orderRepository;
+
+    public OrderController(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
+    }
+
     @GetMapping("/current")
     public String orderForm() {
         return "orderForm";
     }
+
+//    @PostMapping
+//    public String processOrder(@Valid TacoOrder tacoOrder, Errors errors, SessionStatus sessionStatus) {
+//        if (errors.hasErrors()) {
+//            return "orderForm";
+//        }
+//
+//        log.info("Order submitted: {}", tacoOrder);
+//        sessionStatus.setComplete();
+//
+//        return "redirect:/";
+//    }
 
     @PostMapping
     public String processOrder(@Valid TacoOrder tacoOrder, Errors errors, SessionStatus sessionStatus) {
         if (errors.hasErrors()) {
             return "orderForm";
         }
-
-        log.info("Order submitted: {}", tacoOrder);
+        orderRepository.save(tacoOrder);
         sessionStatus.setComplete();
 
         return "redirect:/";
