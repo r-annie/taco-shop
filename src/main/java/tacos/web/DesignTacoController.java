@@ -14,6 +14,7 @@ import tacos.Ingredient;
 import tacos.Ingredient.Type;
 import tacos.Taco;
 import tacos.TacoOrder;
+import tacos.TacoUDT;
 import tacos.data.IngredientRepository;
 
 import javax.validation.Valid;
@@ -30,19 +31,20 @@ public class DesignTacoController {
     private final IngredientRepository ingredientRepository;
 
     @Autowired
-    public DesignTacoController (IngredientRepository ingredientRepository) {
+    public DesignTacoController(IngredientRepository ingredientRepository) {
         this.ingredientRepository = ingredientRepository;
     }
 
     @ModelAttribute
     public void addIngredientsToModel(Model model) {
         List<Ingredient> ingredients = new ArrayList<>();
-        ingredientRepository.findAll().forEach(ingredients::add);;
+        ingredientRepository.findAll().forEach(ingredients::add);
+        ;
 
         Type[] types = Type.values();
         for (Type type : types) {
             model.addAttribute(type.toString().toLowerCase(),
-                    filterByType(ingredients,type));
+                    filterByType(ingredients, type));
         }
     }
 
@@ -67,7 +69,7 @@ public class DesignTacoController {
             return "design";
         }
 
-        tacoOrder.addTaco(taco);
+        tacoOrder.addTaco(new TacoUDT(taco.getName(), taco.getIngredients()));
         log.info("Processing taco: {}", taco);
 
         return "redirect:/orders/current";
