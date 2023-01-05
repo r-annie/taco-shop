@@ -2,6 +2,8 @@ package tacos.web;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -14,10 +16,13 @@ import tacos.Ingredient;
 import tacos.Ingredient.Type;
 import tacos.Taco;
 import tacos.TacoOrder;
+import tacos.User;
 import tacos.data.IngredientRepository;
 import tacos.data.TacoRepository;
+import tacos.data.UserRepository;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,11 +35,13 @@ public class DesignTacoController {
 
     private final IngredientRepository ingredientRepository;
     private TacoRepository tacoRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    public DesignTacoController (IngredientRepository ingredientRepository, TacoRepository tacoRepository) {
+    public DesignTacoController (IngredientRepository ingredientRepository, TacoRepository tacoRepository, UserRepository userRepository) {
         this.ingredientRepository = ingredientRepository;
         this.tacoRepository = tacoRepository;
+        this.userRepository = userRepository;
     }
 
     @ModelAttribute
@@ -49,14 +56,20 @@ public class DesignTacoController {
         }
     }
 
-    @ModelAttribute(name = "order")
-    public TacoOrder order() {
+    @ModelAttribute(name = "tacoOrder")
+    public TacoOrder tacoOrder() {
         return new TacoOrder();
     }
 
     @ModelAttribute(name = "taco")
     public Taco taco() {
         return new Taco();
+    }
+
+    @ModelAttribute(name = "user")
+    public User user() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (User) authentication.getPrincipal();
     }
 
     @GetMapping
@@ -66,13 +79,15 @@ public class DesignTacoController {
 
     @PostMapping
     public String processTaco(@Valid Taco taco, Errors errors, @ModelAttribute TacoOrder tacoOrder) {
+        log.info("Processing taco: {}", taco);
         if (errors.hasErrors()) {
             return "design";
         }
 
+        tacoOrder.addTaco(taco);
         Taco saved = tacoRepository.save(taco);
-        tacoOrder.addTaco(saved);
-        log.info("Processing taco: {}", taco);
+
+        log.info("End processing taco: {}", taco);
 
         return "redirect:/orders/current";
     }
