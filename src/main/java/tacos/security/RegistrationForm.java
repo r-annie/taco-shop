@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 @Data
 public class RegistrationForm {
 
-    @NotBlank(message =  "Password must not be null")
+    @NotBlank(message =  "Username must not be null")
     private String username;
 
     @NotBlank(message =  "Password must not be null")
