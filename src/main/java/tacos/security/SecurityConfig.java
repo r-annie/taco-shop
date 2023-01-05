@@ -2,7 +2,10 @@ package tacos.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -34,12 +37,20 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeRequests()
-                .antMatchers("/design", "/orders").hasRole("USER")
-                .antMatchers("/", "/**").permitAll()
+                .mvcMatchers("/design", "/orders").hasRole("USER")
+                .antMatchers(HttpMethod.DELETE, "/admin/**")
+                .access("hasRole('ADMIN')")
+                .anyRequest().permitAll()
+
                 .and()
                 .formLogin()
                 .loginPage("/login")
                 .defaultSuccessUrl("/design", true)
+
+                .and()
+                .logout()
+                .logoutSuccessUrl("/")
+
                 .and()
                 .build();
     }
