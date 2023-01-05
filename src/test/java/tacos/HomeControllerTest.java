@@ -19,6 +19,7 @@ import tacos.data.OrderRepository;
 import tacos.data.TacoRepository;
 import tacos.data.UserRepository;
 import tacos.security.SecurityConfig;
+import tacos.web.AdminController;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest
@@ -39,6 +40,9 @@ public class HomeControllerTest {
 
     @MockBean
     private UserRepository userRepository;
+
+    @MockBean
+    private AdminController adminController;
 
     @Test
     public void testHomePage() throws Exception {
