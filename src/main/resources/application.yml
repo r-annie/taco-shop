@@ -3,4 +3,4 @@ spring:
     cache: false
   datasource:
     generate-unique-name: false
-    name: tacoshop
+    name: tacocloud

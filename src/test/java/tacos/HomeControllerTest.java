@@ -13,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import tacos.data.IngredientRepository;
 import tacos.data.OrderRepository;
+import tacos.data.TacoRepository;
 
 @WebMvcTest
 public class HomeControllerTest {
@@ -25,6 +26,9 @@ public class HomeControllerTest {
 
     @MockBean
     private OrderRepository orderRepository;
+
+    @MockBean
+    private TacoRepository tacoRepository;
 
     @Test
     public void testHomePage() throws Exception {
